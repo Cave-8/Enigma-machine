@@ -1,2 +1,2 @@
 # Enigma-machine
-An enigma machine simulator built in Rust
+An enigma machine simulator built in Rust.

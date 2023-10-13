@@ -4,7 +4,7 @@ use crate::components as comp;
 
 pub struct EnigmaMachine {
     plugboard: comp::plugboard::Plugboard,
-    rotors: [comp::rotor::Rotor; 3],
+    rotors: Vec<comp::rotor::Rotor>,
     reflector: comp::reflector::Reflector,
 }
 

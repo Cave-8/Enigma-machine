@@ -1,6 +1,5 @@
-mod enigma_machine;
-mod components;
+use colored::Colorize;
 
 fn main() {
-    println!("Hello, world!");
+    println!("{}", "Enigma machine configuration".cyan());
 }

@@ -1,4 +1,5 @@
-/// This module represents plug-board, the first cypher step in original enigma
+/// This module represents plug-board, the first cypher step in original enigma.
+///
 /// Plugboard module and struct, containing substitution_vector.
 pub struct Plugboard {
     substitution_vector: Vec<char>,
@@ -27,6 +28,7 @@ impl Plugboard {
 }
 
 impl Default for Plugboard {
+    /// Initialize plugboard with basic alphabet.
     fn default() -> Self {
         Self {
             substitution_vector: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().collect(),

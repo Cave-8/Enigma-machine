@@ -17,12 +17,6 @@ impl EnigmaMachine {
     /// Setup Enigma, path is config path
     pub fn enigma_setup(&mut self, path: String) {
         let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
-        let mut plugboard: String = Default::default();
-        let mut r1r: String = Default::default();
-        let mut r2r: String = Default::default();
-        let mut r3r: String = Default::default();
-        let mut refl: String = Default::default();
-
         let reader = BufReader::new(File::open(path).unwrap());
         let lines = reader.lines();
 
@@ -32,24 +26,19 @@ impl EnigmaMachine {
                 break;
             }
             if r.contains("R1") {
-                r1r = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
-                self.rotors[0].setup_rotor(&alphabet, &r1r);
+                self.rotors[0].setup_rotor(&alphabet, &r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("R2") {
-                r2r = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
-                self.rotors[1].setup_rotor(&alphabet, &r2r);
+                self.rotors[1].setup_rotor(&alphabet, &r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("R3") {
-                r3r = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
-                self.rotors[2].setup_rotor(&alphabet, &r3r);
+                self.rotors[2].setup_rotor(&alphabet, &r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("PB") {
-                plugboard = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
-                self.plugboard.setup_plugboard(&plugboard);
+                self.plugboard.setup_plugboard(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("REFL") {
-                refl = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
-                self.reflector.setup_reflector(&refl);
+                self.reflector.setup_reflector(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
         }
         self.enigma_print_configuration();

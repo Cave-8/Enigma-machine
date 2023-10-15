@@ -12,7 +12,7 @@ fn plugboard_setup_test () {
     let mut shift = 1;
     let mut plugboard: Plugboard = Default::default();
 
-    plugboard.setup_plugboard(sub_vec);
+    plugboard.setup_plugboard(&sub_vec);
 
     for i in 0..26 {
         let curr_el = *plugboard.substitution_vector().get(i).unwrap() as usize;
@@ -21,7 +21,7 @@ fn plugboard_setup_test () {
 
     sub_vec = "CDEFGHIJKLMNOPQRSTUVWXYZAB".to_string();
     shift = 2;
-    plugboard.setup_plugboard(sub_vec);
+    plugboard.setup_plugboard(&sub_vec);
 
     for i in 0..26 {
         let curr_el = *plugboard.substitution_vector().get(i).unwrap() as usize;
@@ -31,7 +31,7 @@ fn plugboard_setup_test () {
     // sub_vec length is 25
     sub_vec = "CDEFGHIJKLMNOPQRSTUVWXYZA".to_string();
     shift = 2;
-    plugboard.setup_plugboard(sub_vec);
+    plugboard.setup_plugboard(&sub_vec);
 }
 
 /// Test if letter and substitution_vector are correctly bound
@@ -43,7 +43,7 @@ fn plugboard_get_letter_test () {
     let mut i: usize = 0;
     let mut plugboard: Plugboard = Default::default();
 
-    plugboard.setup_plugboard(sub_vec);
+    plugboard.setup_plugboard(&sub_vec);
 
     for c in alphabet.chars() {
         let el_ascii = plugboard.get_letter(c) as usize;

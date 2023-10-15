@@ -4,19 +4,16 @@ An enigma machine simulator built in Rust.
 # Configuration
 The machine is completely configurable from texts/config.<br>
 Rotors are listed from 1 (leftmost) to 3 (rightmost) and for each rotor you'll have to define r_side bindings with german/english alphabet (input a string, the first character will replace A, the second B ecc...).<br>
-After rotors you'll have to define plugboard bindings with the same logic.<br>
+After rotors you'll have to define plugboard and reflector bindings with the same logic.<br>
 Config file starts with START_CONFIG and ends with END_CONFIG.<br>
 An example of accepted syntax is the following:<br>
 
 START_CONFIG<br>
-R1L: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
-R1R: BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
-R2L: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
-R2R: DEFGHIJKLMNOPQRSTUVWXYZABC<br>
-R3L: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
-R3R: FGHIJKLMNOPQRSTUVWXYZABCDE<br>
-P1: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
-P2: BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
+R1: BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
+R2: DEFGHIJKLMNOPQRSTUVWXYZABC<br>
+R3: FGHIJKLMNOPQRSTUVWXYZABCDE<br>
+PL: BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
+REFL: CDEFGHIJKLMNOPQRSTUVWXYZAB<br>
 END_CONFIG<br>
 
 # How to encrypt/decrypt

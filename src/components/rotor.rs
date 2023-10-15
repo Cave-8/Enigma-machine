@@ -14,12 +14,12 @@ pub struct Rotor {
 
 impl Rotor {
     /// Setup of rotor l/r side.
-    pub fn setup_rotor(&mut self, l_side: String, r_side: String) {
+    pub fn setup_rotor(&mut self, l_side: &String, r_side: &String) {
         if l_side.len() != 26 || r_side.len() !=  26 {
             panic!("Error, l_side or r_side lengths is not 26!");
         }
         self.l_side = l_side.chars().collect();
-        self.r_side = l_side.chars().collect();
+        self.r_side = r_side.chars().collect();
     }
 
     // TODO check rotation

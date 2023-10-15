@@ -7,7 +7,7 @@ pub struct Plugboard {
 
 impl Plugboard {
     /// Setup of plugboard with appropriate substitution vector.
-    pub fn setup_plugboard(&mut self, sub_vec: String) {
+    pub fn setup_plugboard(&mut self, sub_vec: &String) {
         if sub_vec.len() != 26 {
             panic!("Error, plugboard vector length is not 26!");
         }

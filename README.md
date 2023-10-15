@@ -21,7 +21,7 @@ Compile the main with: `cargo run ./path/main.rs`.<br>
 Selected desired mode, the machine will read from input and print on output files located in texts folder.<br>
 Machine configuration is read from config file in texts folder.<br>
 Accepted characters are: [A-Za-z] including (\r)\n.<br>
-Due to design choices encrypted/decrypted texts will be in uppercase only<br>.
+Due to design choices encrypted/decrypted texts will be in uppercase only.
 
 # Side notes
 Some choices were made during creation:

@@ -2,13 +2,14 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 /// Enigma machine
 /// It contains a plugboard, three rotors, a deflector
-use crate::components as comp;
+use crate::components::plugboard::Plugboard;
 use crate::components::reflector::Reflector;
+use crate::components::rotor::Rotor;
 
 pub struct EnigmaMachine {
-    plugboard: comp::plugboard::Plugboard,
-    rotors: Vec<comp::rotor::Rotor>,
-    reflector: comp::reflector::Reflector,
+    plugboard: Plugboard,
+    rotors: Vec<Rotor>,
+    reflector: Reflector,
 }
 
 impl EnigmaMachine {
@@ -48,7 +49,7 @@ impl EnigmaMachine {
             }
             if r.contains("REFL") {
                 refl = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
-                self.reflector.setup_reflector(&plugboard);
+                self.reflector.setup_reflector(&refl);
             }
         }
         self.enigma_print_configuration();

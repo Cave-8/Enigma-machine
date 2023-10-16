@@ -16,7 +16,6 @@ impl EnigmaMachine {
 
     /// Setup Enigma, path is config path
     pub fn enigma_setup(&mut self, path: String) {
-        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
         let reader = BufReader::new(File::open(path).unwrap());
         let lines = reader.lines();
 
@@ -26,13 +25,28 @@ impl EnigmaMachine {
                 break;
             }
             if r.contains("R1") {
-                self.rotors[0].setup_rotor(&alphabet, &r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+                self.rotors[0].setup_rotor_wiring(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("R2") {
-                self.rotors[1].setup_rotor(&alphabet, &r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+                self.rotors[1].setup_rotor_wiring(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("R3") {
-                self.rotors[2].setup_rotor(&alphabet, &r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+                self.rotors[2].setup_rotor_wiring(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+            }
+            if r.contains("RIM1") {
+                self.rotors[0].setup_rotor_list_of_characters(r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+            }
+            if r.contains("RIM2") {
+                self.rotors[1].setup_rotor_list_of_characters(r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+            }
+            if r.contains("RIM3") {
+                self.rotors[2].setup_rotor_list_of_characters(r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+            }
+            if r.contains("ORIENTATION") {
+                let orientation: String = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
+                self.rotors[0].setup_rotor_starting_character(orientation.chars().nth(0).unwrap());
+                self.rotors[1].setup_rotor_starting_character(orientation.chars().nth(1).unwrap());
+                self.rotors[2].setup_rotor_starting_character(orientation.chars().nth(2).unwrap());
             }
             if r.contains("PB") {
                 self.plugboard.setup_plugboard(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
@@ -108,13 +122,31 @@ impl EnigmaMachine {
     /// Print configuration
     fn enigma_print_configuration (&mut self) {
         print!("Plugboard: ");
-        self.plugboard.substitution_vector().iter().for_each(|x| print!("{} : {} - ", x.0, x.1));
+        self.plugboard.substitution_vector().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
         print!("\n");
-        println!("Rotor1: {}", self.rotors[0].r_side().iter().collect::<String>());
-        println!("Rotor2: {}", self.rotors[1].r_side().iter().collect::<String>());
-        println!("Rotor3: {}", self.rotors[2].r_side().iter().collect::<String>());
+
+        print!("Rotor1: ");
+        self.rotors[0].wiring().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
+        print!("\n");
+        println!("{}", self.rotors[0].list_of_characters());
+
+        print!("Rotor2: ");
+        self.rotors[1].wiring().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
+        print!("\n");
+        println!("{}", self.rotors[1].list_of_characters());
+
+        print!("Rotor3: ");
+        self.rotors[2].wiring().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
+        print!("\n");
+        println!("{}", self.rotors[2].list_of_characters());
+
+        let dummy_r1 = *self.rotors[0].starting_character();
+        let dummy_r2 = *self.rotors[1].starting_character();
+        let dummy_r3 = *self.rotors[2].starting_character();
+        println!("Orientation {} - {} - {}", dummy_r1, dummy_r2, dummy_r3);
+
         print!("Reflector: ");
-        self.reflector.reflector().iter().for_each(|x| print!("{} : {} - ", x.0, x.1));
+        self.reflector.reflector().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
         print!("\n");
     }
 }

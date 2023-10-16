@@ -3,15 +3,21 @@ An enigma machine simulator built in Rust.
 
 # Configuration
 The machine is completely configurable from texts/config.<br>
-Rotors are listed from 1 (leftmost) to 3 (rightmost) and for each rotor you'll have to define r_side bindings with german/english alphabet (input a string, the first character will replace A, the second B ecc...).<br>
-After rotors you'll have to define plugboard and reflector bindings with couples separated by a space (AB CD... to map A with B, C with D, ecc...).<br>
+Rotors are listed from 1 (leftmost) to 3 (rightmost) and for each rotor you'll have to define internal wiring with couples, defined using german/english alphabet, separated by a space (AB CD... to map A with B, C with D, ecc...).<br><br>
+After rotors wiring you'll need to define order of characters on rotor's rim.
+Then you'll write rotor orientation (shown letters in small windows located on upper part of Enigma, from left to right).<br><br>
+Finally, you'll have to define plugboard and reflector bindings with the same logic of rotor wiring.<br>
 Config file starts with START_CONFIG and ends with END_CONFIG.<br>
 An example of accepted syntax is the following:<br>
 
 START_CONFIG<br>
-R1: BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
-R2: DEFGHIJKLMNOPQRSTUVWXYZABC<br>
-R3: FGHIJKLMNOPQRSTUVWXYZABCDE<br>
+R1: AB CD EF GH IJ KL MN OP QR ST UV WX YZ<br>
+R2: AB CD EF GH IJ KL MN OP QR ST UV WX YZ<br>
+R3: AB CD EF GH IJ KL MN OP QR ST UV WX YZ<br>
+RIM1: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+RIM2: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+RIM3: ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+ORIENTATION: ABC
 PL: AB CD EF GH IJ KL MN OP QR ST UV WX YZ<br>
 REFL: AB CD EF GH IJ KL MN OP QR ST UV WX YZ<br>
 END_CONFIG<br>

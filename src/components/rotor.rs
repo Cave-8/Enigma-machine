@@ -1,14 +1,15 @@
 use std::collections::HashMap;
 use crate::components::reflector::Reflector;
 
-/// Rotor of enigma machine.
+/// Rotor of enigma machine:
 ///
-/// Field: l_side and r_side represent corresponding elements on original rotor, to simulate physical wiring
-/// two char vectors are used, corresponding indexes have corresponding character (I.E: if A and X have
-/// same index in two vectors than A is bound to X).
+/// num_of_rotation quantifies how many rotations the rotor did until that moment (0 <= ... < 26).
 ///
-/// Field: num_of_rotation quantifies how many rotations the rotor did until that moment (0 <= ... < 26).
-/// r_side is rotating side, the rotation is simulated by rotating string one step to the left.
+/// wiring is rotor wiring.
+///
+/// starting_character is character shown at the beginning of encryption
+///
+/// list_of_characters is the rotor rim
 pub struct Rotor {
     wiring: HashMap<char, char>,
     list_of_characters: String,

@@ -1,5 +1,5 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::fs::{File};
+use std::io::{BufRead, BufReader, BufWriter, stdout, Write};
 /// Enigma machine
 /// It contains a plugboard, three rotors, a deflector
 use crate::components::plugboard::Plugboard;
@@ -50,22 +50,72 @@ impl EnigmaMachine {
     }
 
     /// Encrypt file
-    fn enigma_encrypt (&mut self) {
+    pub fn enigma_encrypt (&mut self, path_input: String, path_output: String) {
+        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
+        let reader_input = BufReader::new(File::open(path_input).unwrap());
+        let lines_input = reader_input.lines();
+        let mut writer_output = BufWriter::new(File::create(path_output).unwrap());
 
+        for l in lines_input {
+            let uppercase_l = l.unwrap().to_uppercase();
+            let curr_line = uppercase_l.chars();
+            let mut encrypted_line: String = Default::default();
+            for c in curr_line {
+                if alphabet.contains(c) {
+                    encrypted_line.push_str(Rotor::rotor_routine(c, &mut self.rotors, &self.reflector).to_string().as_ref())
+                }
+                else {
+                    encrypted_line.push_str(c.to_string().as_ref());
+                }
+            }
+            encrypted_line.push_str("\r\n");
+            writer_output.write_all(encrypted_line.as_ref()).unwrap();
+            writer_output.flush().unwrap();
+
+            print!("{}", encrypted_line);
+            stdout().flush().unwrap();
+        }
     }
 
     /// Decrypt file
-    fn enigma_decrypt (&mut self) {
+    pub fn enigma_decrypt (&mut self, path_input: String, path_output: String) {
+        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
+        let reader_input = BufReader::new(File::open(path_input).unwrap());
+        let lines_input = reader_input.lines();
+        let mut writer_output = BufWriter::new(File::create(path_output).unwrap());
 
+        for l in lines_input {
+            let uppercase_l = l.unwrap().to_uppercase();
+            let curr_line = uppercase_l.chars();
+            let mut encrypted_line: String = Default::default();
+            for c in curr_line {
+                if alphabet.contains(c) {
+                    encrypted_line.push_str(self.plugboard.get_letter(Rotor::rotor_routine(c, &mut self.rotors, &self.reflector)).to_string().as_ref())
+                }
+                else {
+                    encrypted_line.push_str(c.to_string().as_ref());
+                }
+            }
+            encrypted_line.push_str("\r\n");
+            writer_output.write_all(encrypted_line.as_ref()).unwrap();
+            writer_output.flush().unwrap();
+
+            print!("{}", encrypted_line);
+            stdout().flush().unwrap();
+        }
     }
 
     /// Print configuration
     fn enigma_print_configuration (&mut self) {
-        println!("Plugboard: {}", self.plugboard.substitution_vector().iter().collect::<String>());
+        print!("Plugboard: ");
+        self.plugboard.substitution_vector().iter().for_each(|x| print!("{} : {} - ", x.0, x.1));
+        print!("\n");
         println!("Rotor1: {}", self.rotors[0].r_side().iter().collect::<String>());
         println!("Rotor2: {}", self.rotors[1].r_side().iter().collect::<String>());
         println!("Rotor3: {}", self.rotors[2].r_side().iter().collect::<String>());
-        println!("Reflector: {}", self.reflector.reflector().iter().collect::<String>())
+        print!("Reflector: ");
+        self.reflector.reflector().iter().for_each(|x| print!("{} : {} - ", x.0, x.1));
+        print!("\n");
     }
 }
 

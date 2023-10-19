@@ -27,7 +27,9 @@ Accepted characters are: [A-Za-z] including (\r)\n.<br>
 Due to design choices encrypted/decrypted texts will be in uppercase only.
 
 # Benchmark
-TODO
+Some benchmarks:
+* Divine Comedy (96763 words or 537043 characters) -> 3,96s
+* In Search of Lost Time (169271 words or 1012064 characters) -> 7,76s
 
 # Side notes
 Some choices were made during creation:

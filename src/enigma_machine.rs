@@ -1,6 +1,5 @@
 use std::fs::{File};
-use std::io::{BufRead, BufReader, BufWriter, Write};
-use colored::Colorize;
+use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 /// Enigma machine
 /// It contains a plugboard, three rotors, a deflector
 use crate::components::plugboard::Plugboard;
@@ -54,34 +53,31 @@ impl EnigmaMachine {
     }
 
     /// Reset enigma
-    fn enigma_reset(&mut self, path: String) {
+    pub fn enigma_reset(&mut self, path: String) {
         self.enigma_setup(path);
     }
 
     /// Encrypt/Decrypt file
     pub fn enigma_routine (&mut self, path_input: String, path_output: String) {
         let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
-        let reader_input = BufReader::new(File::open(path_input).unwrap());
-        let lines_input = reader_input.lines();
+        let mut reader_input = BufReader::new(File::open(path_input).unwrap());
+        let mut text: String = Default::default();
+        let _ = reader_input.read_to_string(&mut text);
         let mut writer_output = BufWriter::new(File::create(path_output).unwrap());
 
-        for l in lines_input {
-            let uppercase_l = l.unwrap().to_uppercase();
-            let curr_line = uppercase_l.chars();
-            let mut encrypted_line: String = Default::default();
-            for c in curr_line {
-                if alphabet.contains(c) {
+        let mut encrypted_line: String = Default::default();
+        text = text.to_uppercase();
+
+        for c in text.chars() {
+            if alphabet.contains(c) {
                     encrypted_line.push_str(Rotor::rotor_routine(c, &self.plugboard, &mut self.rotors, &self.reflector, &self.input_wheel).to_string().as_ref())
                 }
                 else {
                     encrypted_line.push_str(c.to_string().as_ref());
                 }
             }
-            encrypted_line.push_str("\r\n");
-            writer_output.write_all(encrypted_line.as_ref()).unwrap();
-            writer_output.flush().unwrap();
-            println!("{}", "Done.".green())
-        }
+        writer_output.write_all(encrypted_line.as_ref()).unwrap();
+        writer_output.flush().unwrap();
     }
 
     /// Print configuration (useful for debugging)

@@ -1,5 +1,5 @@
 # Enigma-machine
-An enigma machine simulator built in Rust.
+An Enigma machine simulator built in Rust.
 
 # Configuration
 The machine is completely configurable from texts/config.<br>

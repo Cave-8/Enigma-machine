@@ -10,6 +10,7 @@ pub struct EnigmaMachine {
     plugboard: Plugboard,
     rotors: Vec<Rotor>,
     reflector: Reflector,
+    input_wheel: String,
 }
 
 impl EnigmaMachine {
@@ -76,7 +77,7 @@ impl EnigmaMachine {
             let mut encrypted_line: String = Default::default();
             for c in curr_line {
                 if alphabet.contains(c) {
-                    encrypted_line.push_str(Rotor::rotor_routine(c, &mut self.rotors, &self.reflector).to_string().as_ref())
+                    encrypted_line.push_str(Rotor::rotor_routine(c, &self.plugboard, &mut self.rotors, &self.reflector, &self.input_wheel).to_string().as_ref())
                 }
                 else {
                     encrypted_line.push_str(c.to_string().as_ref());
@@ -104,7 +105,7 @@ impl EnigmaMachine {
             let mut encrypted_line: String = Default::default();
             for c in curr_line {
                 if alphabet.contains(c) {
-                    encrypted_line.push_str(self.plugboard.get_letter(Rotor::rotor_routine(c, &mut self.rotors, &self.reflector)).to_string().as_ref())
+                    encrypted_line.push_str(Rotor::rotor_routine(c, &self.plugboard, &mut self.rotors, &self.reflector, &self.input_wheel).to_string().as_ref());
                 }
                 else {
                     encrypted_line.push_str(c.to_string().as_ref());
@@ -158,6 +159,7 @@ impl Default for EnigmaMachine {
             plugboard: Default::default(),
             rotors: vec![Default::default(), Default::default(), Default::default()],
             reflector: Default::default(),
+            input_wheel: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string(),
         }
     }
 }

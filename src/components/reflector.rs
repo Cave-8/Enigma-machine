@@ -5,6 +5,7 @@ use std::collections::HashMap;
 /// Reflector is a hashmap of char pairs containing mapping between different letters
 pub struct Reflector {
     reflector: HashMap<char, char>,
+    list_of_characters: String,
 }
 
 impl Reflector {
@@ -36,13 +37,18 @@ impl Reflector {
     pub fn reflector (&self) -> &HashMap<char, char> {
         &self.reflector
     }
+    /// Getter
+    pub fn list_of_characters (&self) -> &String {
+        &self.list_of_characters
+    }
 }
 
 impl Default for Reflector {
     /// Initialize reflector with basic alphabet.
     fn default() -> Self {
         Self {
-            reflector: [('A', 'B')].iter().cloned().collect()
+            reflector: [('A', 'B')].iter().cloned().collect(),
+            list_of_characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string(),
         }
     }
 }

@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use colored::Color::Magenta;
 use crate::components::plugboard::Plugboard;
 use crate::components::reflector::Reflector;
 
@@ -14,6 +13,7 @@ use crate::components::reflector::Reflector;
 /// list_of_characters: is the rotor rim
 pub struct Rotor {
     wiring: HashMap<char, char>,
+    wiring_rev: HashMap<char, char>,
     list_of_characters: String,
     starting_character: char,
     num_of_rotation: usize,
@@ -22,26 +22,29 @@ pub struct Rotor {
 impl Rotor {
     /// Setup of rotor internal wiring.
     pub fn setup_rotor_wiring(&mut self, wiring: &String) {
-        if wiring.len() != 38 {
+        if wiring.len() != 26 {
             panic!("Error, reflector doesn't have 13 required couples!");
         }
-        let couples: Vec<String> = wiring.split(' ').map(|x| x.to_string()).collect();
         // Reset map
         self.wiring.remove(&'A');
+        self.wiring_rev.remove(&'A');
 
-        for c in couples {
-            let char1: char = c.chars().nth(0).unwrap();
-            let char2: char = c.chars().nth(1).unwrap();
+        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
+        let mut index = 0;
 
-            // Double insertion is done to speed up lookup
+        for c in alphabet.chars() {
+            let char1: char = c;
+            let char2: char = wiring.chars().nth(index).unwrap();
+            index += 1;
+
             self.wiring.insert(char1, char2);
-            self.wiring.insert(char2, char1);
+            self.wiring_rev.insert(char2, char1);
         }
     }
 
     /// Setup of rotor rim.
-    pub fn setup_rotor_list_of_characters(&mut self, list_of_chars: String) {
-        self.list_of_characters = list_of_chars;
+    pub fn setup_rotor_list_of_characters(&mut self, list_of_chars: &String) {
+        self.list_of_characters = list_of_chars.parse().unwrap();
     }
 
     /// Setup of starting character.
@@ -91,10 +94,11 @@ impl Rotor {
             rotors[0].list_of_characters().chars().nth(index).unwrap()
         }
         // From first rotor to input wheel
-        else {
+        else if ending_rotor == -1 {
             let index = rotors[2].list_of_characters().chars().position(|x| x == letter).unwrap();
             input_wheel.chars().nth(index).unwrap()
         }
+        else {' '}
     }
 
     /// Given a letter it returns corresponding encoded letter.
@@ -107,11 +111,11 @@ impl Rotor {
         let mut rotor1rotated = false;
         let mut rotor0rotated = false;
 
-        println!("-------------------------------");
-        println!("Starting letter {}", curr_letter);
+        // Exchange letter with plugboard
+        curr_letter = plugboard.get_letter(curr_letter);
 
-
-        /*rotors[2].rotate_rotor();
+        // Rotors shift
+        rotors[2].rotate_rotor();
         if rotors[2].num_of_rotation == 26 {
             rotors[2].num_of_rotation = 0;
             rotors[1].rotate_rotor();
@@ -119,22 +123,128 @@ impl Rotor {
         }
         else {
             rotors[2].num_of_rotation += 1;
-        }*/
+        }
+
+        if rotor1rotated {
+            if rotors[1].num_of_rotation == 26 {
+                rotors[1].num_of_rotation = 0;
+                rotors[0].rotate_rotor();
+                rotor0rotated = true;
+            } else {
+                rotors[1].num_of_rotation += 1;
+            }
+        }
+
+        if rotor0rotated {
+            if rotors[0].num_of_rotation == 26 {
+                rotors[0].num_of_rotation = 0;
+            }
+            else {
+                rotors[0].num_of_rotation += 1;
+            }
+        }
 
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, -1, 2, input_wheel, reflector);
         curr_letter = rotors[2].get_letter(curr_letter);
+
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 2, 1, input_wheel, reflector);
         curr_letter = rotors[1].get_letter(curr_letter);
+
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 1, 0, input_wheel, reflector);
         curr_letter = rotors[0].get_letter(curr_letter);
+
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 0, 4, input_wheel, reflector);
+        curr_letter = reflector.get_letter(curr_letter);
+
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 4, 0, input_wheel, reflector);
-        curr_letter = rotors[0].get_letter(curr_letter);
+        curr_letter = rotors[0].get_letter_rev(curr_letter);
+
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 0, 1, input_wheel, reflector);
-        curr_letter = rotors[1].get_letter(curr_letter);
+        curr_letter = rotors[1].get_letter_rev(curr_letter);
+
         curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 1, 2, input_wheel, reflector);
+        curr_letter = rotors[2].get_letter_rev(curr_letter);
+
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 2, -1, input_wheel, reflector);
+
+
+        // Exchange letter with plugboard
+        curr_letter = plugboard.get_letter(curr_letter);
+        return curr_letter;
+    }
+
+    /// Verbose version of rotor_routine (useful for debugging)
+    pub fn rotor_routine_verbose (letter: char, plugboard: &Plugboard, rotors: &mut Vec<Rotor>, reflector: &Reflector, input_wheel: &String) -> char {
+        let mut curr_letter = letter;
+        let mut rotor1rotated = false;
+        let mut rotor0rotated = false;
+
+        println!("-------------------------------");
+        println!("Starting letter {}", curr_letter);
+
+        // Exchange letter with plugboard
+        curr_letter = plugboard.get_letter(curr_letter);
+
+        // Rotors shift
+        rotors[2].rotate_rotor();
+        if rotors[2].num_of_rotation == 26 {
+            rotors[2].num_of_rotation = 0;
+            rotors[1].rotate_rotor();
+            rotor1rotated = true;
+        }
+        else {
+            rotors[2].num_of_rotation += 1;
+        }
+
+        if rotor1rotated {
+            if rotors[1].num_of_rotation == 26 {
+                rotors[1].num_of_rotation = 0;
+                rotors[0].rotate_rotor();
+                rotor0rotated = true;
+            } else {
+                rotors[1].num_of_rotation += 1;
+            }
+        }
+
+        if rotor0rotated {
+            if rotors[0].num_of_rotation == 26 {
+                rotors[0].num_of_rotation = 0;
+            }
+            else {
+                rotors[0].num_of_rotation += 1;
+            }
+        }
+
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, -1, 2, input_wheel, reflector);
+        println!("Enter in right as: {}", curr_letter);
         curr_letter = rotors[2].get_letter(curr_letter);
-        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 2, 4, input_wheel, reflector);
+        println!("Switched with {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 2, 1, input_wheel, reflector);
+        println!("Enter in center as: {}", curr_letter);
+        curr_letter = rotors[1].get_letter(curr_letter);
+        println!("Switched with {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 1, 0, input_wheel, reflector);
+        println!("Enter in left as: {}", curr_letter);
+        curr_letter = rotors[0].get_letter(curr_letter);
+        println!("Switched with {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 0, 4, input_wheel, reflector);
+        println!("Enter in reflector as: {}", curr_letter);
+        curr_letter = reflector.get_letter(curr_letter);
+        println!("Exit from reflector as: {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 4, 0, input_wheel, reflector);
+        println!("Enter in left as: {}", curr_letter);
+        curr_letter = rotors[0].get_letter_rev(curr_letter);
+        println!("Switched with {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 0, 1, input_wheel, reflector);
+        println!("Enter in center as: {}", curr_letter);
+        curr_letter = rotors[1].get_letter_rev(curr_letter);
+        println!("Switched with {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 1, 2, input_wheel, reflector);
+        println!("Enter in right as: {}", curr_letter);
+        curr_letter = rotors[2].get_letter_rev(curr_letter);
+        println!("Switched with {}", curr_letter);
+        curr_letter = Rotor::get_letter_in_next_rotor(curr_letter, rotors, 2, -1, input_wheel, reflector);
+        println!("Exit as: {}", curr_letter);
 
 
         // Exchange letter with plugboard
@@ -144,9 +254,13 @@ impl Rotor {
         return curr_letter;
     }
 
-    /// Given letter it returns linked letter
+    /// Given letter it returns linked letter (direct)
     pub fn get_letter(&self, letter: char) -> char {
         return *self.wiring.get(&letter).unwrap();
+    }
+    /// Given letter it returns linked letter (reverse)
+    pub fn get_letter_rev(&self, letter: char) -> char {
+        return *self.wiring_rev.get(&letter).unwrap();
     }
     /// Getter
     pub fn wiring (&mut self) -> &HashMap<char, char> {
@@ -171,6 +285,7 @@ impl Default for Rotor {
     fn default() -> Self {
         Self {
             wiring: [('A', 'B')].iter().cloned().collect(),
+            wiring_rev: [('A', 'B')].iter().cloned().collect(),
             list_of_characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string(),
             starting_character: 'A',
             num_of_rotation: 0,

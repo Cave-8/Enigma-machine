@@ -1,5 +1,6 @@
 use std::fs::{File};
-use std::io::{BufRead, BufReader, BufWriter, stdout, Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
+use colored::Colorize;
 /// Enigma machine
 /// It contains a plugboard, three rotors, a deflector
 use crate::components::plugboard::Plugboard;
@@ -25,23 +26,17 @@ impl EnigmaMachine {
             if r.contains("END_CONFIG") {
                 break;
             }
-            if r.contains("R1") {
+            if r.contains("ROTL") {
                 self.rotors[0].setup_rotor_wiring(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+                self.rotors[0].setup_rotor_list_of_characters(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
-            if r.contains("R2") {
+            if r.contains("ROTC") {
                 self.rotors[1].setup_rotor_wiring(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+                self.rotors[1].setup_rotor_list_of_characters(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
-            if r.contains("R3") {
+            if r.contains("ROTR") {
                 self.rotors[2].setup_rotor_wiring(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
-            }
-            if r.contains("RIM1") {
-                self.rotors[0].setup_rotor_list_of_characters(r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
-            }
-            if r.contains("RIM2") {
-                self.rotors[1].setup_rotor_list_of_characters(r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
-            }
-            if r.contains("RIM3") {
-                self.rotors[2].setup_rotor_list_of_characters(r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
+                self.rotors[2].setup_rotor_list_of_characters(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
             if r.contains("ORIENTATION") {
                 let orientation: String = r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap();
@@ -56,7 +51,6 @@ impl EnigmaMachine {
                 self.reflector.setup_reflector(&r.split(':').map(|x| x.to_string()).collect::<Vec<String>>().get(1).unwrap().to_string().trim().parse().unwrap());
             }
         }
-        self.enigma_print_configuration();
     }
 
     /// Reset enigma
@@ -64,8 +58,8 @@ impl EnigmaMachine {
         self.enigma_setup(path);
     }
 
-    /// Encrypt file
-    pub fn enigma_encrypt (&mut self, path_input: String, path_output: String) {
+    /// Encrypt/Decrypt file
+    pub fn enigma_routine (&mut self, path_input: String, path_output: String) {
         let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
         let reader_input = BufReader::new(File::open(path_input).unwrap());
         let lines_input = reader_input.lines();
@@ -86,57 +80,27 @@ impl EnigmaMachine {
             encrypted_line.push_str("\r\n");
             writer_output.write_all(encrypted_line.as_ref()).unwrap();
             writer_output.flush().unwrap();
-
-            print!("{}", encrypted_line);
-            stdout().flush().unwrap();
+            println!("{}", "Done.".green())
         }
     }
 
-    /// Decrypt file
-    pub fn enigma_decrypt (&mut self, path_input: String, path_output: String) {
-        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string();
-        let reader_input = BufReader::new(File::open(path_input).unwrap());
-        let lines_input = reader_input.lines();
-        let mut writer_output = BufWriter::new(File::create(path_output).unwrap());
-
-        for l in lines_input {
-            let uppercase_l = l.unwrap().to_uppercase();
-            let curr_line = uppercase_l.chars();
-            let mut encrypted_line: String = Default::default();
-            for c in curr_line {
-                if alphabet.contains(c) {
-                    encrypted_line.push_str(Rotor::rotor_routine(c, &self.plugboard, &mut self.rotors, &self.reflector, &self.input_wheel).to_string().as_ref());
-                }
-                else {
-                    encrypted_line.push_str(c.to_string().as_ref());
-                }
-            }
-            encrypted_line.push_str("\r\n");
-            writer_output.write_all(encrypted_line.as_ref()).unwrap();
-            writer_output.flush().unwrap();
-
-            print!("{}", encrypted_line);
-            stdout().flush().unwrap();
-        }
-    }
-
-    /// Print configuration
+    /// Print configuration (useful for debugging)
     fn enigma_print_configuration (&mut self) {
         print!("Plugboard: ");
         self.plugboard.substitution_vector().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
         print!("\n");
 
-        print!("Rotor1: ");
+        print!("RotorL: ");
         self.rotors[0].wiring().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
         print!("\n");
         println!("{}", self.rotors[0].list_of_characters());
 
-        print!("Rotor2: ");
+        print!("RotorC: ");
         self.rotors[1].wiring().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
         print!("\n");
         println!("{}", self.rotors[1].list_of_characters());
 
-        print!("Rotor3: ");
+        print!("RotorR: ");
         self.rotors[2].wiring().iter().for_each(|x| print!("{} : {} ", x.0, x.1));
         print!("\n");
         println!("{}", self.rotors[2].list_of_characters());

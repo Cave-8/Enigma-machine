@@ -10,13 +10,14 @@ pub struct Plugboard {
 impl Plugboard {
     /// Setup of plugboard with appropriate substitution vector.
     pub fn setup_plugboard(&mut self, sub_vec: &String) {
-        if sub_vec.len() != 38 {
-            panic!("Error, reflector doesn't have 13 required couples!");
-        }
         let couples: Vec<String> = sub_vec.split(' ').map(|x| x.to_string()).collect();
 
         // Reset map
         self.sub_vec.remove(&'A');
+        if couples.len() == 1 {
+
+            return;
+        }
 
         for c in couples {
             let char1: char = c.chars().nth(0).unwrap();
@@ -30,7 +31,10 @@ impl Plugboard {
 
     /// Used to get substituted letter in last Enigma step.
     pub fn get_letter(&self, letter: char) -> char {
-        return *self.sub_vec.get(&letter).unwrap();
+        match self.sub_vec.get(&letter) {
+            None => {letter}
+            Some(_) => {*self.sub_vec.get(&letter).unwrap()}
+        }
     }
 
     /// Getter

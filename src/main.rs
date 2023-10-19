@@ -31,7 +31,7 @@ fn main() {
             println!("{}", "Configuring the machine...".cyan());
             enigma_machine.enigma_setup("./src/texts/config".to_string());
             println!("{}", "Encrypting/Decrypting file...".yellow());
-            enigma_machine.enigma_routine("C:/Users/acave/Desktop/divine_comedy.txt".to_string(), "C:/Users/acave/Desktop/divine_comedy_encrypted.txt".to_string());
+            enigma_machine.enigma_routine("./src/texts/divine_comedy.txt".to_string(), "./src/texts/divine_comedy_encrypted.txt".to_string());
 
             println!("Time to encrypt: {:?}", now.elapsed());
 
@@ -41,7 +41,7 @@ fn main() {
             let now = Instant::now();
             let mut enigma_machine: EnigmaMachine = Default::default();
             enigma_machine.enigma_setup("./src/texts/config".to_string());
-            enigma_machine.enigma_routine("C:/Users/acave/Desktop/divine_comedy_encrypted.txt".to_string(), "C:/Users/acave/Desktop/divine_comedy.txt".to_string());
+            enigma_machine.enigma_routine("./src/texts/divine_comedy_encrypted.txt".to_string(), "./src/texts/divine_comedy.txt".to_string());
             println!("Time to decrypt: {:?}", now.elapsed());
 
             println!("{}", "Done I benchmark".green());
@@ -55,7 +55,7 @@ fn main() {
             println!("{}", "Configuring the machine...".cyan());
             enigma_machine.enigma_setup("./src/texts/config".to_string());
             println!("{}", "Encrypting/Decrypting file...".yellow());
-            enigma_machine.enigma_routine("C:/Users/acave/Desktop/recherche.txt".to_string(), "C:/Users/acave/Desktop/recherche_encrypted.txt".to_string());
+            enigma_machine.enigma_routine("./src/texts/recherche.txt".to_string(), "./src/texts/recherche_encrypted.txt".to_string());
 
             println!("Time to encrypt: {:?}", now.elapsed());
 
@@ -65,7 +65,7 @@ fn main() {
             let now = Instant::now();
             let mut enigma_machine: EnigmaMachine = Default::default();
             enigma_machine.enigma_setup("./src/texts/config".to_string());
-            enigma_machine.enigma_routine("C:/Users/acave/Desktop/recherche_encrypted.txt".to_string(), "C:/Users/acave/Desktop/recherche.txt".to_string());
+            enigma_machine.enigma_routine("./src/texts/recherche_encrypted.txt".to_string(), "./src/texts/recherche.txt".to_string());
             println!("Time to decrypt: {:?}", now.elapsed());
 
             println!("{}", "Done II benchmark".green());

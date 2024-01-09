@@ -1,5 +1,5 @@
 # Enigma-machine
-An enigma machine simulator built in Rust.
+An Enigma machine simulator built in Rust.
 
 # Configuration
 The machine is completely configurable from texts/config.<br>
@@ -30,6 +30,8 @@ Due to design choices encrypted/decrypted texts will be in uppercase only.
 Some benchmarks:
 * Divine Comedy (96763 words or 537043 characters) -> 3,96s
 * In Search of Lost Time (169271 words or 1012064 characters) -> 7,76s
+  
+These results heavily depends on your machine, this implementation of Enigma is single-threaded.
 
 # Side notes
 Some choices were made during creation:

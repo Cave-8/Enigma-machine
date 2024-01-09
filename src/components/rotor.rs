@@ -70,7 +70,7 @@ impl Rotor {
 
     /// Return correspondent letter in following rotor (or from/to entry wheel (0) and reflector (4))
     pub fn get_letter_in_next_rotor (letter: char, rotors: &mut Vec<Rotor>, starting_rotor: isize, ending_rotor: isize, input_wheel: &String, reflector: &Reflector) -> char {
-        //From input wheel to first rotor
+        //From input.txt wheel to first rotor
         if starting_rotor == -1 {
             let index = input_wheel.chars().position(|x| x == letter).unwrap();
             let char = rotors[2].list_of_characters.chars().nth(index).unwrap();
@@ -93,7 +93,7 @@ impl Rotor {
             let index = reflector.list_of_characters().chars().position(|x| x == letter).unwrap();
             rotors[0].list_of_characters().chars().nth(index).unwrap()
         }
-        // From first rotor to input wheel
+        // From first rotor to input.txt wheel
         else if ending_rotor == -1 {
             let index = rotors[2].list_of_characters().chars().position(|x| x == letter).unwrap();
             input_wheel.chars().nth(index).unwrap()

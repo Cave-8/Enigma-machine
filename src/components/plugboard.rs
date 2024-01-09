@@ -15,7 +15,6 @@ impl Plugboard {
         // Reset map
         self.sub_vec.remove(&'A');
         if couples.len() == 1 {
-
             return;
         }
 

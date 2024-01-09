@@ -19,9 +19,9 @@ fn main() {
             let mut enigma_machine: EnigmaMachine = Default::default();
 
             println!("{}", "Configuring the machine...".cyan());
-            enigma_machine.enigma_setup("./src/texts/config".to_string());
+            enigma_machine.enigma_setup("./src/texts/config.txt".to_string());
             println!("{}", "Encrypting/Decrypting file...".yellow());
-            enigma_machine.enigma_routine("./src/texts/input".to_string(), "./src/texts/output".to_string());
+            enigma_machine.enigma_routine("./src/texts/input.txt".to_string(), "./src/texts/output.txt".to_string());
             println!("{}", "Done".green());
         }
         1 => {
@@ -29,42 +29,39 @@ fn main() {
             let now = Instant::now();
 
             println!("{}", "Configuring the machine...".cyan());
-            enigma_machine.enigma_setup("./src/texts/config".to_string());
+            enigma_machine.enigma_setup("./src/texts/config.txt".to_string());
             println!("{}", "Encrypting/Decrypting file...".yellow());
             enigma_machine.enigma_routine("./src/texts/divine_comedy.txt".to_string(), "./src/texts/divine_comedy_encrypted.txt".to_string());
 
             println!("Time to encrypt: {:?}", now.elapsed());
 
-            drop(now);
             drop(enigma_machine);
 
             let now = Instant::now();
             let mut enigma_machine: EnigmaMachine = Default::default();
-            enigma_machine.enigma_setup("./src/texts/config".to_string());
+            enigma_machine.enigma_setup("./src/texts/config.txt".to_string());
             enigma_machine.enigma_routine("./src/texts/divine_comedy_encrypted.txt".to_string(), "./src/texts/divine_comedy.txt".to_string());
             println!("Time to decrypt: {:?}", now.elapsed());
 
             println!("{}", "Done I benchmark".green());
 
-            drop(now);
             drop(enigma_machine);
 
             let mut enigma_machine: EnigmaMachine = Default::default();
             let now = Instant::now();
 
             println!("{}", "Configuring the machine...".cyan());
-            enigma_machine.enigma_setup("./src/texts/config".to_string());
+            enigma_machine.enigma_setup("./src/texts/config.txt".to_string());
             println!("{}", "Encrypting/Decrypting file...".yellow());
             enigma_machine.enigma_routine("./src/texts/recherche.txt".to_string(), "./src/texts/recherche_encrypted.txt".to_string());
 
             println!("Time to encrypt: {:?}", now.elapsed());
 
-            drop(now);
             drop(enigma_machine);
 
             let now = Instant::now();
             let mut enigma_machine: EnigmaMachine = Default::default();
-            enigma_machine.enigma_setup("./src/texts/config".to_string());
+            enigma_machine.enigma_setup("./src/texts/config.txt".to_string());
             enigma_machine.enigma_routine("./src/texts/recherche_encrypted.txt".to_string(), "./src/texts/recherche.txt".to_string());
             println!("Time to decrypt: {:?}", now.elapsed());
 

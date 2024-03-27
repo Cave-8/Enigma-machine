@@ -20,18 +20,18 @@ REFL: AY BR CU DH EQ FS GL IP JX KN MO TZ VW<br>
 END_CONFIG<br>
 
 # How to encrypt/decrypt
-Compile the main with: `cargo run ./path/main.rs`.<br>
+Compile the main with: `cargo run --release ./path/main.rs`.<br>
 The machine will read from input and print on output files located in texts folder.<br>
 Machine configuration is read from config file in texts folder.<br>
 Accepted characters are: [A-Za-z] including (\r)\n.<br>
 Due to design choices encrypted/decrypted texts will be in uppercase only.
 
 # Benchmark
-Some benchmarks:
-* Divine Comedy (96763 words or 537043 characters) -> 3,96s
-* In Search of Lost Time (169271 words or 1012064 characters) -> 7,76s
+Some benchmarks (to correctly execute benchmark mode insert proper files in texts folder):
+* Divine Comedy (about 590000 characters) -> ca. 257ms
+* In Search of Lost Time (1st volume) (about 977000 characters) -> ca. 434ms
   
-These results heavily depends on your machine, this implementation of Enigma is single-threaded.
+These results heavily depends on your machine, this implementation of Enigma is single-threaded and could be optimized.
 
 # Side notes
 Some choices were made during creation:
